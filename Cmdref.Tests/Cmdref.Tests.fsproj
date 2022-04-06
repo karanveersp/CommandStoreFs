@@ -26,7 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CommandStoreFs\CommandStoreFs.fsproj" />
+    <ProjectReference Include="..\Cmdref\Cmdref.fsproj" />
   </ItemGroup>
 
 </Project>

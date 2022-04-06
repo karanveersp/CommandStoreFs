@@ -6,6 +6,25 @@
     <VersionPrefix>1.0.0</VersionPrefix>
   </PropertyGroup>
 
+  <!-- Package Metadata -->
+  <PropertyGroup>
+    <Title>dotnet-cmdref</Title>
+    <Authors>Karanveer</Authors>
+    <PackageTags>dotnet tool;command store;cli</PackageTags>
+    <Summary>
+      A dotnet tool to store commands for future reference.
+    </Summary>
+    <Description>
+      This dotnet tool is a cli app to store and manage cli commands for future reference.
+      Use it to recall long commands you tend to forget,
+      or to build a reference library of commands.
+    </Description>
+    <RepositoryUrl>https://github.com/karanveersp/dotnet-cmdref</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
   <!-- Dotnet Tool Specific settings -->
   <PropertyGroup>
     <PackAsTool>true</PackAsTool>
@@ -21,6 +40,7 @@
     <Compile Include="Prompts.fs" />
     <Compile Include="Util.fs" />
     <Compile Include="Program.fs" />
+    <None Include="./README.md" Pack="true" PackagePath=""/>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Chiron" Version="6.3.1" />
