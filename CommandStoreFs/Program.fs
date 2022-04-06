@@ -1,27 +1,33 @@
 ﻿open Util
+open Prompts
 open Model
 open System.IO
 
-let appDataDir = GetAppDataDir()
+[<Literal>]
+let AppName = "cmdref"
 
-let CommandsFileName = "commands.json"
+[<Literal>]
+let CommandsFileName = "cmdref.json"
 
 let CommandsFile =
-    Path.Combine(
-        List.toArray [ appDataDir
-                       CommandsFileName ]
-    )
+    CommandsFilePath AppName CommandsFileName
 
-let mutable CommandsMap = LoadCommandsIfExist CommandsFile
+let dirpath = Path.GetDirectoryName(CommandsFile)
+CreateDirectoryIfNotExist dirpath
+
+let cmdsProvider = fun () -> ReadFileText CommandsFile
+
+let mutable CommandsMap = ParseCommands cmdsProvider
 let mutable finished = false
 
 printfn "Commands file: %s" CommandsFile
 
 while not finished do
     if CommandsMap.IsEmpty then
-        printfn "No commands stored"
+        printfn "No commands saved"
 
-        let createNewCmd = YesNoPrompt "Create a new entry?" false
+        let createNewCmd =
+            ConfirmPrompt "Create a new entry?" false
 
         if createNewCmd then
             CommandsMap <- CreateHandler CommandsFile CommandsMap

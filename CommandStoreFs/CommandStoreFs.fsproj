@@ -1,19 +1,29 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <VersionPrefix>1.0.0</VersionPrefix>
   </PropertyGroup>
+
+  <!-- Dotnet Tool Specific settings -->
+  <PropertyGroup>
+    <PackAsTool>true</PackAsTool>
+    <PackageId>dotnet-cmdref</PackageId>
+    <ToolCommandName>cmdref</ToolCommandName>
+    <PackageOutputPath>./nupkg</PackageOutputPath>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
 
   <ItemGroup>
     <Compile Include="Model.fs" />
+    <Compile Include="Prompts.fs" />
     <Compile Include="Util.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Chiron" Version="6.3.1" />
     <PackageReference Include="Sharprompt" Version="2.4.0" />
   </ItemGroup>
-
 </Project>

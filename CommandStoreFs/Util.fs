@@ -1,42 +1,57 @@
 ﻿module Util
 
 open System.IO
-open Sharprompt
 open System
 open Chiron
 
 open Model
+open Prompts
 
-let GetAppDataDir () =
-    let dirPath =
-        Path.Combine(
-            Environment.GetFolderPath(
-                Environment.SpecialFolder.LocalApplicationData,
-                Environment.SpecialFolderOption.DoNotVerify
-            ),
-            "command-store-fs"
-        )
+/// Gets the path to the user's application data folder
+/// which can be used to store application artifacts.
+let AppDataDir =
+    Environment.GetFolderPath(
+        Environment.SpecialFolder.LocalApplicationData,
+        Environment.SpecialFolderOption.DoNotVerify
+    )
 
-    Directory.CreateDirectory(dirPath) |> ignore
-    dirPath
+/// Gets the path of the file used to store commands
+let CommandsFilePath (appName: string) (fname: string) =
+    Path.Combine(
+        List.toArray [ AppDataDir
+                       appName
+                       fname ]
+    )
+
+let CreateDirectoryIfNotExist (dirpath: string) =
+    if not (Directory.Exists dirpath) then
+        Directory.CreateDirectory(dirpath) |> ignore
 
 
+/// Converts json string to list of commands.
 let JsonToCommands (content: string) : Command list =
-    content |> Json.parse |> Json.deserialize
+    match content with
+    | "" -> list.Empty
+    | _ -> content |> Json.parse |> Json.deserialize
 
 
-let LoadCommandsIfExist (cmdsFilePath: string) : Map<string, Command> =
-    if (File.Exists(cmdsFilePath)) then
-        let jsonContent = File.ReadAllText(cmdsFilePath)
-        let cmdList = JsonToCommands jsonContent
+/// Parses commands from the result of the provider into a map
+/// where command name is the key.
+let ParseCommands (cmdsProvider: unit -> string) : Map<string, Command> =
+    cmdsProvider ()
+    |> JsonToCommands
+    |> List.map (fun cmd -> (cmd.Name, cmd))
+    |> Map.ofList
 
-        cmdList
-        |> List.map (fun cmd -> (cmd.Name, cmd))
-        |> Map.ofList
-
+/// Reads the file contents and returns them.
+/// Returns empty string if file does not exist.
+let ReadFileText (fpath: string) : string =
+    if (File.Exists(fpath)) then
+        File.ReadAllText(fpath)
     else
-        list.Empty |> Map.ofList
+        ""
 
+/// Converts command list into indented json string
 let CommandsToJson (commands: Command List) =
     commands
     |> List.map Json.serialize
@@ -44,7 +59,7 @@ let CommandsToJson (commands: Command List) =
     |> Json.formatWith JsonFormattingOptions.Pretty
 
 
-
+/// Writes list of commands into the file as json
 let WriteCommands (cmdsFilePath: string) (commandsMap: Map<string, Command>) =
     let json =
         commandsMap.Values
@@ -53,19 +68,6 @@ let WriteCommands (cmdsFilePath: string) (commandsMap: Map<string, Command>) =
         |> CommandsToJson
 
     File.WriteAllText(cmdsFilePath, json)
-
-
-let YesNoPrompt (message: string) (defaultVal: bool) : bool = Prompt.Confirm(message, defaultVal)
-
-let RequiredTextPrompt (msg: string) : string =
-    Prompt.Input<string>(
-        msg,
-        validators =
-            [| Validators.Required()
-               Validators.MinLength(1) |]
-    )
-
-let SelectionPrompt (message: string) (choices: seq<string>) : string = Prompt.Select(message, choices)
 
 
 let CreateCmdWithName (name: string) =
@@ -90,6 +92,11 @@ let CreateHandler (cmdFilePath: string) (cmdMap: Map<string, Command>) =
     WriteCommands cmdFilePath newMap
     newMap
 
+let PrintCommand (cmd: Command) : unit =
+    printfn ""
+    printfn $"Name: {cmd.Name}\nPlatform: {cmd.Platform}\nDescription: {cmd.Description}"
+    printfn $"Command:\n{cmd.Command}\n"
+
 let ViewHandler (itemsMap: Map<string, Command>) =
     if (itemsMap.IsEmpty) then
         printfn $"No existing commands found."
@@ -99,7 +106,9 @@ let ViewHandler (itemsMap: Map<string, Command>) =
         let selectedItem =
             SelectionPrompt "Select a command" entries
 
-        printfn $"\n{string itemsMap.[selectedItem]}\n"
+        let cmd = itemsMap.[selectedItem]
+
+        PrintCommand cmd
 
     itemsMap
 
@@ -141,8 +150,10 @@ let DeleteHandler (cmdsFilePath: string) (itemsMap: Map<string, Command>) =
         let selectedItem =
             SelectionPrompt "Select command to delete" entries
 
+        PrintCommand itemsMap.[selectedItem]
+
         let confirm =
-            YesNoPrompt $"Are you sure you want to delete entry ({selectedItem})?" false
+            ConfirmPrompt $"Are you sure you want to delete entry ({selectedItem})?" false
 
         if confirm then
             let newMap = Map.remove selectedItem itemsMap
