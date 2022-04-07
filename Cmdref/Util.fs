@@ -70,6 +70,16 @@ let WriteCommands (cmdsFilePath: string) (commandsMap: Map<string, Command>) =
     File.WriteAllText(cmdsFilePath, json)
 
 
+let CommandSelection (cmdMap: Map<string, Command>) : string seq =
+    cmdMap.Values
+    |> Seq.map (fun cmd -> sprintf "%s - %s" cmd.Platform cmd.Name)
+    |> Seq.sort
+
+let NameFromSelection (selection: string) : string =
+    selection.Split '-'
+    |> Seq.map (fun s -> s.Trim())
+    |> Seq.last
+
 let CreateCmdWithName (name: string) =
     let name = name
     let command = RequiredTextPrompt "Command"
@@ -101,12 +111,13 @@ let ViewHandler (itemsMap: Map<string, Command>) =
     if (itemsMap.IsEmpty) then
         printfn $"No existing commands found."
     else
-        let entries = itemsMap.Keys
+        let entries = CommandSelection itemsMap
 
         let selectedItem =
             SelectionPrompt "Select a command" entries
 
-        let cmd = itemsMap.[selectedItem]
+        let cmdName = NameFromSelection selectedItem
+        let cmd = itemsMap.[cmdName]
 
         PrintCommand cmd
 
@@ -126,21 +137,23 @@ let GetUserAction () : Action =
     ActionFromString action
 
 let UpdateHandler (cmdsFilePath: string) (itemsMap: Map<string, Command>) =
-    let entries = itemsMap.Keys
+    let entries = CommandSelection itemsMap
 
     let selectedItem =
         SelectionPrompt "Select command to update" entries
 
-    printfn $"{string itemsMap.[selectedItem]}"
+    let cmdName = NameFromSelection selectedItem
+    let cmd = itemsMap.[cmdName]
+    PrintCommand cmd
 
-    let cmd = CreateCmdWithName selectedItem
-    let newMap = Map.add selectedItem cmd itemsMap
+    let cmd = CreateCmdWithName cmdName
+    let newMap = Map.add cmdName cmd itemsMap
     WriteCommands cmdsFilePath newMap
     newMap
 
 
 let DeleteHandler (cmdsFilePath: string) (itemsMap: Map<string, Command>) =
-    let entries = itemsMap.Keys
+    let entries = CommandSelection itemsMap
 
     if (itemsMap.IsEmpty) then
         printfn "No commands to delete."
@@ -150,13 +163,15 @@ let DeleteHandler (cmdsFilePath: string) (itemsMap: Map<string, Command>) =
         let selectedItem =
             SelectionPrompt "Select command to delete" entries
 
-        PrintCommand itemsMap.[selectedItem]
+        let cmdName = NameFromSelection selectedItem
+        let cmd = itemsMap.[cmdName]
+        PrintCommand cmd
 
         let confirm =
-            ConfirmPrompt $"Are you sure you want to delete entry ({selectedItem})?" false
+            ConfirmPrompt $"Are you sure you want to delete entry ({cmdName})?" false
 
         if confirm then
-            let newMap = Map.remove selectedItem itemsMap
+            let newMap = Map.remove cmdName itemsMap
             WriteCommands cmdsFilePath newMap
             newMap
         else
