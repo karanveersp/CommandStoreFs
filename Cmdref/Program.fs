@@ -20,8 +20,6 @@ let cmdsProvider = fun () -> ReadFileText CommandsFile
 let mutable CommandsMap = ParseCommands cmdsProvider
 let mutable finished = false
 
-printfn "Commands file: %s" CommandsFile
-
 while not finished do
     if CommandsMap.IsEmpty then
         printfn "No commands saved"

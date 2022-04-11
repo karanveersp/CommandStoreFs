@@ -1,17 +1,38 @@
 # dotnet-cmdref
 
-A cli app to store your commands for future reference.
+A dotnet tool to store your commands for future reference.
 Use it to
 * recall long commands you tend to forget
 * build a reference library of commands
 
 ## Install
 
-The app can be installed as a dotnet-tool and executed with `cmdref`.
+The command to install the tool can be found on the [NuGet page](https://www.nuget.org/packages/dotnet-cmdref/).
 
-1. Clone the repo using `git clone https://github.com/karanveersp/dotnet-cmdref.git`
-2. `dotnet build Cmdref`
-3. `dotnet pack Cmdref`
-4. `dotnet tool install -g dotnet-cmdref --add-source ./Cmdref/nupkg/`
-5. Run the program with `cmdref`
+The tool can be invoked with the `cmdref` command.
+
+--- 
+
+## Usage
+
+When invokded, the tool offers a list of actions from which the user can choose.
+
+```
+Create
+View
+Update
+Delete
+Show storage file path
+Exit
+```
+
+When creating a command, the user will be prompted for the following:
+1. `Command Name` - A short but descriptive name of the command
+2. `Platform` - Which platform the command is related to, such as _dotnet cli_, _docker_, or _windows_. Commands of the same platform will be listed together in alphabetical order when selecting which one to view/update/delete. Use the same platform in terms of to case/symbols for neat organization of commands.
+3. `Description` - A longer description explaining the command.
+4. `Command` - The command itself. Multiline commands currently not supported but contributions are welcome.
+
+All commands are stored in a `.json` file in a local app config directory named `cmdref`.
+
+This file can be backed up or copied to other machines to access your saved commands. It is intentionally kept in a pretty-printed json format so it can also be edited manually by a user.
 

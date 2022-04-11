@@ -132,6 +132,7 @@ let GetUserAction () : Action =
                "View"
                "Update"
                "Delete"
+               "Show storage file path"
                "Exit" |]
 
     ActionFromString action
@@ -177,10 +178,16 @@ let DeleteHandler (cmdsFilePath: string) (itemsMap: Map<string, Command>) =
         else
             itemsMap
 
+let DisplayPathHandler (cmdsFilePath: string) =
+    printfn "Command store file: %s" cmdsFilePath
+
 let ProcessAction (cmdsFilePath: string) (itemsMap: Map<string, Command>) (action: Action) =
     match action with
     | Create -> CreateHandler cmdsFilePath itemsMap
     | View -> ViewHandler itemsMap
     | Update -> UpdateHandler cmdsFilePath itemsMap
     | Delete -> DeleteHandler cmdsFilePath itemsMap
+    | DisplayPath ->
+        DisplayPathHandler cmdsFilePath
+        itemsMap
     | Exit -> itemsMap

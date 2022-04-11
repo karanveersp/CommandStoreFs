@@ -8,6 +8,7 @@ type Action =
     | Create
     | Update
     | Delete
+    | DisplayPath
     | Exit
 
 let ActionFromString (s: string) : Action =
@@ -16,6 +17,7 @@ let ActionFromString (s: string) : Action =
     | "View" -> View
     | "Update" -> Update
     | "Delete" -> Delete
+    | "Show storage file path" -> DisplayPath
     | "Exit" -> Exit
     | _ -> failwith $"{s} is not a valid action"
 
