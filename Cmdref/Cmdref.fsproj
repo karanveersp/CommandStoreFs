@@ -11,18 +11,19 @@
     <Title>dotnet-cmdref</Title>
     <Authors>Karanveer</Authors>
     <PackageTags>dotnet tool;command store;cli</PackageTags>
-    <Summary>
-      A dotnet tool to store commands for future reference.
-    </Summary>
     <Description>
       This dotnet tool is a cli app to store and manage cli commands for future reference.
-      Use it to recall long commands you tend to forget,
-      or to build a reference library of commands.
+      Use it to recall long or crpytic commands or to build a reference library of commands.
     </Description>
     <RepositoryUrl>https://github.com/karanveersp/dotnet-cmdref</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageReleaseNotes>
+      v1.1.1
+      - Created action for displaying storage file path
+      - Updated README.md
+    </PackageReleaseNotes>
   </PropertyGroup>
 
   <!-- Dotnet Tool Specific settings -->
