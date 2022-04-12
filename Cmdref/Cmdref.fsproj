@@ -43,7 +43,7 @@
     <Compile Include="Prompts.fs" />
     <Compile Include="Util.fs" />
     <Compile Include="Program.fs" />
-    <None Include="./README.md" Pack="true" PackagePath=""/>
+    <None Include="../README.md" Pack="true" PackagePath=""/>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Chiron" Version="6.3.1" />
