@@ -3,7 +3,7 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <VersionPrefix>1.1.1</VersionPrefix>
+    <VersionPrefix>1.1.2</VersionPrefix>
   </PropertyGroup>
 
   <!-- Package Metadata -->
@@ -13,13 +13,15 @@
     <PackageTags>dotnet tool;command store;cli</PackageTags>
     <Description>
       This dotnet tool is a cli app to store and manage cli commands for future reference.
-      Use it to recall long or crpytic commands or to build a reference library of commands.
+      Use it to recall long commands or to build a reference library of commands.
     </Description>
     <RepositoryUrl>https://github.com/karanveersp/dotnet-cmdref</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageReleaseNotes>
+      v1.1.2
+      - Fixed a couple typos in readme and project metadata
       v1.1.1
       - Created action for displaying storage file path
       - Updated README.md

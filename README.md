@@ -9,13 +9,13 @@ Use it to
 
 The command to install the tool can be found on the [NuGet page](https://www.nuget.org/packages/dotnet-cmdref/).
 
-The tool can be invoked with the `cmdref` command.
+The tool can be invoked with `cmdref`.
 
 --- 
 
 ## Usage
 
-When invokded, the tool offers a list of actions from which the user can choose.
+The tool displays a list of actions.
 
 ```
 Create
