@@ -76,9 +76,12 @@ let CommandSelection (cmdMap: Map<string, Command>) : string seq =
     |> Seq.sort
 
 let NameFromSelection (selection: string) : string =
-    selection.Split '-'
-    |> Seq.map (fun s -> s.Trim())
-    |> Seq.last
+    let nameParts =
+        selection.Split('-', StringSplitOptions.TrimEntries)
+        |> Seq.tail
+
+    String.Join("-", nameParts)
+
 
 let CreateCmdWithName (name: string) =
     let name = name
@@ -113,8 +116,7 @@ let ViewHandler (itemsMap: Map<string, Command>) =
     else
         let entries = CommandSelection itemsMap
 
-        let selectedItem =
-            SelectionPrompt "Select a command" entries
+        let selectedItem = SelectionPrompt "Select a command" entries
 
         let cmdName = NameFromSelection selectedItem
         let cmd = itemsMap.[cmdName]
@@ -140,8 +142,7 @@ let GetUserAction () : Action =
 let UpdateHandler (cmdsFilePath: string) (itemsMap: Map<string, Command>) =
     let entries = CommandSelection itemsMap
 
-    let selectedItem =
-        SelectionPrompt "Select command to update" entries
+    let selectedItem = SelectionPrompt "Select command to update" entries
 
     let cmdName = NameFromSelection selectedItem
     let cmd = itemsMap.[cmdName]
@@ -161,8 +162,7 @@ let DeleteHandler (cmdsFilePath: string) (itemsMap: Map<string, Command>) =
         itemsMap
     else
 
-        let selectedItem =
-            SelectionPrompt "Select command to delete" entries
+        let selectedItem = SelectionPrompt "Select command to delete" entries
 
         let cmdName = NameFromSelection selectedItem
         let cmd = itemsMap.[cmdName]
